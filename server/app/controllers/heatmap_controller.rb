@@ -22,11 +22,34 @@ class HeatmapController < ApplicationController
             return render json: [
                 :message => "Heatmap created successfully",
                 :heatmap => @heatmap
-            ]
+            ], status: :created
         rescue
             return render json: [
                 :message => "Heatmap could not be created",
                 :errors => @heatmap.errors
+            ], status: :unprocessable_entity
+        end
+    end
+
+    def update
+        @heatmap = Heatmap.find(params[:id])
+
+        if @heatmap.present?
+            begin
+                @heatmap.update!(heatmap_params)
+                return render json: [
+                    :message => "Heatmap updated successfully",
+                    :heatmap => @heatmap
+                ], status: :ok
+            rescue
+                return render json: [
+                    :message => "Heatmap could not be updated",
+                    :errors => @heatmap.errors
+                ], status: :unprocessable_entity
+            end
+        else
+            return render json: [
+                :errors => ["Heatmap not found"]
             ]
         end
     end
