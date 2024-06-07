@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   get "api/heatmaps/:user_id", to: "heatmap#index", as: :heatmaps
+  post "api/heatmaps", to: "heatmap#create", as: :heatmaps_create
 end
