@@ -54,6 +54,21 @@ class HeatmapController < ApplicationController
         end
     end
 
+    def destroy
+        @heatmap = Heatmap.find(params[:id])
+
+        if @heatmap.present?
+            @heatmap.destroy
+            return render json: [
+                :message => "Heatmap deleted successfully"
+            ], status: :ok
+        else
+            return render json: [
+                :errors => ["Heatmap not found"]
+            ]
+        end
+    end
+
     private
     def heatmap_params
         params.permit(:name, :user_id, :data)
