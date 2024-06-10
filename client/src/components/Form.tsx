@@ -1,10 +1,14 @@
 interface Props {
   mode: "login" | "register";
+  submitFunc: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export const Form: React.FC<Props> = ({ mode }) => {
+export const Form: React.FC<Props> = ({ mode, submitFunc }) => {
   return (
-    <form className="flex flex-col gap-8 bg-slate-800 p-8 rounded-lg w-full max-w-[90%] sm:max-w-[26rem] md:max-w-[32rem]">
+    <form
+      onSubmit={submitFunc}
+      className="flex flex-col gap-8 bg-slate-800 p-8 rounded-lg w-full max-w-[90%] sm:max-w-[26rem] md:max-w-[32rem]"
+    >
       <div className="flex flex-col gap-2">
         <label className="text-white text-lg" htmlFor="email">
           Email
