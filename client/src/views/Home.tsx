@@ -52,31 +52,34 @@ export function Home() {
               tmp_heatmaps[index].last_updated?.getTime() / mil_to_day
           );
 
-          if (
-            tmp_heatmaps[index].data[tmp_heatmaps[index].data.length - 1] ===
-            true
-          ) {
-            for (let i = 1; i <= 7; i++) {
-              if (i == 7) {
-                tmp_heatmaps[index].data[tmp_heatmaps[index].data.length - i] =
-                  true;
-              } else {
-                tmp_heatmaps[index].data[tmp_heatmaps[index].data.length - i] =
-                  false;
-              }
-            }
-          } else {
-            let last_checked = 0;
+          let last_checked = 0;
 
-            for (let i = 0; i < tmp_heatmaps[index].data.length - 1; i++) {
-              if (tmp_heatmaps[index].data[i] === true) {
-                last_checked = i;
-              }
+          for (let i = 0; i < tmp_heatmaps[index].data.length - 1; i++) {
+            if (tmp_heatmaps[index].data[i] === true) {
+              last_checked = i;
             }
-
-            tmp_heatmaps[index].data[last_checked + day_jump] = true;
-            tmp_heatmaps[index].last_updated = new Date();
           }
+
+          if (last_checked + 1 + day_jump >= tmp_heatmaps[index].data.length) {
+            const new_weeks = Math.ceil(
+              (last_checked + 1 + day_jump - 364) / 7
+            );
+            console.log(new_weeks);
+            for (let i = 0; i < new_weeks * 7; i++) {
+              tmp_heatmaps[index].data.push(false);
+            }
+          }
+
+          last_checked = 0;
+
+          for (let i = 0; i < tmp_heatmaps[index].data.length - 1; i++) {
+            if (tmp_heatmaps[index].data[i] === true) {
+              last_checked = i;
+            }
+          }
+
+          tmp_heatmaps[index].data[last_checked + day_jump] = true;
+          tmp_heatmaps[index].last_updated = new Date();
         }
       }
     }
