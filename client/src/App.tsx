@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // contexts
 import { UserContextProvider } from "./contexts/UserContext";
 
+//components
+import { Navbar } from "./components/Navbar";
+
 // views
 import { Home } from "./views/Home";
 import { Login } from "./views/Login";
@@ -13,6 +16,7 @@ export function App() {
     <UserContextProvider>
       <main className="w-[100vw] h-[100vh] bg-slate-900">
         <BrowserRouter>
+          <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
