@@ -11,13 +11,15 @@ import { Register } from "./views/Register";
 export function App() {
   return (
     <UserContextProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </BrowserRouter>
+      <main className="w-[100vw] h-[100vh] bg-slate-900">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </BrowserRouter>
+      </main>
     </UserContextProvider>
   );
 }
