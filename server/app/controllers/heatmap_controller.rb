@@ -1,5 +1,6 @@
 class HeatmapController < ApplicationController
     skip_before_action :verify_authenticity_token
+    before_action :authenticate_devise_api_token!
     def index
         @heatmaps = Heatmap.where(user_id: params[:user_id])
 

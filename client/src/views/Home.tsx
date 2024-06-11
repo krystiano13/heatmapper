@@ -4,28 +4,42 @@ import { UserContext } from "../contexts/UserContext";
 import { Heatmap } from "../components/Heatmap";
 import { HeatmapType } from "../types/heatmap";
 
+type fetchType = {
+  id: number;
+  data: string;
+};
+
 export function Home() {
   const userContext = useContext(UserContext);
   const navigate = useNavigate();
   const [heatmaps, setHeatmaps] = useState<HeatmapType[]>([]);
 
-  const test_heatmap: HeatmapType = {
-    id: 0,
-    title: "",
-    data: [],
-    last_updated: undefined,
-  };
+  function getHeatmaps() {
+    fetch(`http://127.0.0.1:3000/api/heatmaps/${userContext?.user?.id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${userContext?.user?.token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data[0].heatmaps) {
+          data[0].heatmaps.forEach((item: fetchType) => {
+            setHeatmaps([
+              ...heatmaps,
+              JSON.parse(item.data) as unknown as HeatmapType,
+            ]);
+          });
+        }
+      });
+  }
 
   useEffect(() => {
     if (!userContext?.user) {
       navigate("/login");
     }
 
-    for (let i = 0; i < 364; i++) {
-      test_heatmap.data.push(false);
-    }
-
-    setHeatmaps([...heatmaps, test_heatmap]);
+    getHeatmaps();
   }, [userContext?.user]);
 
   function updateHeatmap(heatmapData: HeatmapType) {
@@ -112,18 +126,19 @@ export function Home() {
         Authorization: `Bearer ${userContext?.user?.token}`,
       },
       body: formData,
-    }).then((res) => {
-      if (res.ok) {
-        setHeatmaps([...heatmaps, new_heatmap]);
-      } else if (res.status === 422) {
-        alert("Validation Error");
-      } else {
-        alert("Server Error");
-      }
-
-      return res.json()
     })
-      .then(data => console.log(data));
+      .then((res) => {
+        if (res.ok) {
+          setHeatmaps([...heatmaps, new_heatmap]);
+        } else if (res.status === 422) {
+          alert("Validation Error");
+        } else {
+          alert("Server Error");
+        }
+
+        return res.json();
+      })
+      .then((data) => console.log(data));
   }
 
   return (
