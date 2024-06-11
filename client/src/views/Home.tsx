@@ -39,10 +39,6 @@ export function Home() {
   }
 
   useEffect(() => {
-    if (!userContext?.user) {
-      navigate("/login");
-    }
-
     getHeatmaps();
   }, [userContext?.user]);
 
@@ -182,31 +178,42 @@ export function Home() {
 
   return (
     <div className="w-full h-full overflow-y-auto flex flex-col items-center pt-24">
-      {heatmaps.map((heatmap) => (
-        <Heatmap
-          deleteFunc={deleteHeatmap}
-          update={updateHeatmap}
-          heatmap={heatmap}
-        />
-      ))}
-      <form
-        onSubmit={createHeatmap}
-        className="flex items-center gap-4 justify-center mt-8"
-      >
-        <input
-          type="text"
-          placeholder="title"
-          required
-          name="name"
-          className="p-2 text-white text-lg outline-none bg-transparent border-[1px] border-slate-200 rounded-md"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white p-2 pl-6 pr-6 hover:bg-blue-500 transition-colors cursor-pointer"
-        >
-          Create Heatmap
-        </button>
-      </form>
+      {userContext?.user ? (
+        <>
+          {heatmaps.map((heatmap) => (
+            <Heatmap
+              key={heatmap.id}
+              deleteFunc={deleteHeatmap}
+              update={updateHeatmap}
+              heatmap={heatmap}
+            />
+          ))}
+          <form
+            onSubmit={createHeatmap}
+            className="flex items-center gap-4 justify-center mt-8"
+          >
+            <input
+              type="text"
+              placeholder="title"
+              required
+              name="name"
+              className="p-2 text-white text-lg outline-none bg-transparent border-[1px] border-slate-200 rounded-md"
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 text-white p-2 pl-6 pr-6 hover:bg-blue-500 transition-colors cursor-pointer"
+            >
+              Create Heatmap
+            </button>
+          </form>
+        </>
+      ) : (
+        <>
+          <h1 className="text-white text-3xl">
+            Log in or create account first ...
+          </h1>
+        </>
+      )}
     </div>
   );
 }
