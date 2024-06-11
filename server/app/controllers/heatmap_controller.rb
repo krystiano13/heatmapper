@@ -19,7 +19,7 @@ class HeatmapController < ApplicationController
         @heatmap = Heatmap.new(heatmap_params)
 
         begin
-            @heatmap.save!
+            @heatmap.save
             return render json: [
                 :message => "Heatmap created successfully",
                 :heatmap => @heatmap

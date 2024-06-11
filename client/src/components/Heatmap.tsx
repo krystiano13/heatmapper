@@ -4,9 +4,10 @@ import { useRef } from "react";
 interface Props {
   heatmap: HeatmapType;
   update: (heatmapData: HeatmapType) => void;
+  deleteFunc: (heatmapData: HeatmapType) => void;
 }
 
-export const Heatmap: React.FC<Props> = ({ heatmap, update }) => {
+export const Heatmap: React.FC<Props> = ({ heatmap, update, deleteFunc }) => {
   const heatmapRef = useRef<HTMLDivElement>(null);
   return (
     <section
@@ -29,11 +30,19 @@ export const Heatmap: React.FC<Props> = ({ heatmap, update }) => {
       <button
         onClick={() => {
           update(heatmap);
-          heatmapRef.current?.scrollTo(heatmapRef.current.scrollWidth,0);
+          heatmapRef.current?.scrollTo(heatmapRef.current.scrollWidth, 0);
         }}
-        className="mt-4 bg-blue-600 text-white p-2 pl-6 pr-6 hover:bg-blue-500 transition-colors cursor-pointer"
+        className="mt-4 text-xs md:text-base bg-blue-600 text-white p-2 pl-6 pr-6 hover:bg-blue-500 transition-colors cursor-pointer"
       >
         Update Heatmap
+      </button>
+      <button
+        onClick={() => {
+          deleteFunc(heatmap);
+        }}
+        className="mt-4 ml-2 md:ml-4 text-xs md:text-base bg-red-600 text-white p-2 pl-6 pr-6 hover:bg-red-500 transition-colors cursor-pointer"
+      >
+        Delete Heatmap
       </button>
     </section>
   );

@@ -24,11 +24,16 @@ export function Home() {
       .then((res) => res.json())
       .then((data) => {
         if (data[0].heatmaps) {
-          data[0].heatmaps.forEach((item: fetchType) => {
+          const array = heatmaps;
+          (data[0].heatmaps as fetchType[]).forEach((item: fetchType) => {
+            console.log(item);
             const map = JSON.parse(item.data) as unknown as HeatmapType;
             map.id = item.id;
-            setHeatmaps([...heatmaps, map]);
+            array.push(map);
           });
+
+          setHeatmaps([]);
+          setHeatmaps([...array]);
         }
       });
   }
@@ -158,10 +163,31 @@ export function Home() {
       .then((data) => console.log(data));
   }
 
+  function deleteHeatmap(heatmapData: HeatmapType) {
+    fetch(`http://127.0.0.1:3000/api/heatmaps/${heatmapData.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${userContext?.user?.token}`,
+      },
+    }).then((res) => {
+      if (res.ok) {
+        setHeatmaps(
+          heatmaps.filter((heatmap) => heatmap.id !== heatmapData.id)
+        );
+      } else {
+        alert("server error");
+      }
+    });
+  }
+
   return (
     <div className="w-full h-full overflow-y-auto flex flex-col items-center pt-24">
       {heatmaps.map((heatmap) => (
-        <Heatmap update={updateHeatmap} heatmap={heatmap} />
+        <Heatmap
+          deleteFunc={deleteHeatmap}
+          update={updateHeatmap}
+          heatmap={heatmap}
+        />
       ))}
       <form
         onSubmit={createHeatmap}
