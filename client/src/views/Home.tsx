@@ -87,16 +87,59 @@ export function Home() {
     setHeatmaps([...tmp_heatmaps]);
   }
 
+  function createHeatmap(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    formData.append("user_id", userContext?.user?.id as unknown as string);
+
+    const new_heatmap: HeatmapType = {
+      id: heatmaps.length + 1,
+      title: formData.get("name") as string,
+      data: [],
+      last_updated: undefined,
+    };
+
+    for (let i = 0; i < 364; i++) {
+      new_heatmap.data.push(false);
+    }
+
+    formData.append("data", JSON.stringify(new_heatmap));
+
+    fetch("http://127.0.0.1:3000/api/heatmaps", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${userContext?.user?.token}`,
+      },
+      body: formData,
+    }).then((res) => {
+      if (res.ok) {
+        setHeatmaps([...heatmaps, new_heatmap]);
+      } else if (res.status === 422) {
+        alert("Validation Error");
+      } else {
+        alert("Server Error");
+      }
+
+      return res.json()
+    })
+      .then(data => console.log(data));
+  }
+
   return (
     <div className="w-full h-full overflow-y-auto flex flex-col items-center pt-24">
       {heatmaps.map((heatmap) => (
         <Heatmap update={updateHeatmap} heatmap={heatmap} />
       ))}
-      <form className="flex items-center gap-4 justify-center mt-8">
+      <form
+        onSubmit={createHeatmap}
+        className="flex items-center gap-4 justify-center mt-8"
+      >
         <input
           type="text"
           placeholder="title"
           required
+          name="name"
           className="p-2 text-white text-lg outline-none bg-transparent border-[1px] border-slate-200 rounded-md"
         />
         <button
