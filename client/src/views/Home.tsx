@@ -25,10 +25,9 @@ export function Home() {
       .then((data) => {
         if (data[0].heatmaps) {
           data[0].heatmaps.forEach((item: fetchType) => {
-            setHeatmaps([
-              ...heatmaps,
-              JSON.parse(item.data) as unknown as HeatmapType,
-            ]);
+            const map = JSON.parse(item.data) as unknown as HeatmapType;
+            map.id = item.id;
+            setHeatmaps([...heatmaps, map]);
           });
         }
       });
@@ -97,8 +96,26 @@ export function Home() {
         }
       }
     }
-    setHeatmaps([]);
-    setHeatmaps([...tmp_heatmaps]);
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(tmp_heatmaps[index]));
+    formData.append("user_id", userContext?.user?.id as unknown as string);
+    formData.append("name", tmp_heatmaps[index].title);
+
+    fetch(`http://127.0.0.1:3000/api/heatmaps/${tmp_heatmaps[index].id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${userContext?.user?.token}`,
+      },
+      body: formData,
+    }).then((res) => {
+      if (res.ok) {
+        setHeatmaps([]);
+        setHeatmaps([...tmp_heatmaps]);
+      } else {
+        alert("server error");
+      }
+      return res.json();
+    });
   }
 
   function createHeatmap(e: React.FormEvent<HTMLFormElement>) {
